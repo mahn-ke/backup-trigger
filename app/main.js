@@ -3,7 +3,6 @@ const RUN_AT_STARTUP = process.env.RUN_AT_STARTUP;
 const DRY_RUN = process.env.DRY_RUN?.toLowerCase() === 'true';
 const ORG = 'mahn-ke';
 const WORKFLOW_FILE = 'backup.yml';
-const INTERVAL_MS = 60 * 60 * 1000; // 1 hour
 
 if (!TF_VAR_GITHUB_PAT) {
     console.error('TF_VAR_GITHUB_PAT environment variable not set.');
@@ -55,16 +54,47 @@ async function run() {
     }
 }
 
+function calculateMillisecondsUntilNextMidnight() {
+    const now = new Date();
+    const nextMidnight = new Date(now);
+    nextMidnight.setHours(24, 0, 30, 0); // offset by 30 seconds to guarantee next day
+    return nextMidnight - now;
+}
+
+async function runAndSchedule() {
+    try {
+        await run();
+    } catch (err) {
+        console.error('Error during midnight run:', err);
+        process.exit(1);
+    }
+    scheduleNextRun();
+}
+
+function scheduleNextRun() {
+    const nextRunTime = Date.now() + calculateMillisecondsUntilNextMidnight();
+    console.log("Next run at: ", new Date(nextRunTime).toISOString());
+    setTimeout(runAndSchedule, calculateMillisecondsUntilNextMidnight());
+}
+
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    process.exit(1);
+});
+process.on('unhandledRejection', (reason) => {
+    console.error('Unhandled Rejection:', reason);
+    process.exit(1);
+});
+
 (async () => {
     console.log('RUN_AT_STARTUP:', RUN_AT_STARTUP);
-    if (RUN_AT_STARTUP)
-    {
-        await run();
+    if (RUN_AT_STARTUP) {
+        try {
+            await run();
+        } catch (err) {
+            console.error('Error during startup run:', err);
+        }
     }
 
-    console.log("Next run at: ", new Date(Date.now() + INTERVAL_MS).toISOString());
-    setInterval(async () => {
-        await run();
-        console.log("Next run at: ", new Date(Date.now() + INTERVAL_MS).toISOString());
-    }, INTERVAL_MS);
+    scheduleNextRun();
 })();
