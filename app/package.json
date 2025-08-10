@@ -1,0 +1,6 @@
+{
+    "name": "backup-trigger",
+    "scripts": {
+        "start": "node main.js"
+    }
+}
