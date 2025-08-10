@@ -4,3 +4,7 @@ services:
   app:
     image: ghcr.io/mahn-ke/backup-trigger:latest
     restart: unless-stopped
+    environment:
+      
+      TF_VAR_GITHUB_PAT: ${TF_VAR_GITHUB_PAT}
+      RUN_AT_STARTUP: true
