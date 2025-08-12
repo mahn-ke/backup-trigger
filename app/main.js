@@ -1,5 +1,5 @@
 const TF_VAR_GITHUB_PAT = process.env.TF_VAR_GITHUB_PAT;
-const RUN_AT_STARTUP = process.env.RUN_AT_STARTUP;
+const RUN_AT_STARTUP = process.env.RUN_AT_STARTUP?.toLowerCase() === 'true';
 const DRY_RUN = process.env.DRY_RUN?.toLowerCase() === 'true';
 const ORG = 'mahn-ke';
 const WORKFLOW_FILE = 'backup.yml';
