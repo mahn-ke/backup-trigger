@@ -36,7 +36,7 @@ async function triggerWorkflow(repo, branch) {
         body: JSON.stringify({ ref: branch })
     });
     if (!res.ok) {
-        console.error(`Failed to trigger workflow for ${repo.name}: ${res.statusText}`);
+        console.error(`Failed to trigger workflow for ${repo.name}: ${res.statusText}\n${await res.text()}`);
         return;
     }
 
