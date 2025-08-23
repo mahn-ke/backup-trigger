@@ -6,4 +6,4 @@ services:
     restart: unless-stopped
     environment:
       TF_VAR_GITHUB_PAT: ${TF_VAR_GITHUB_PAT}
-      RUN_AT_STARTUP: false
+      RUN_AT_STARTUP: true
