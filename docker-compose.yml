@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   app:
-    image: ghcr.io/mahn-ke/backup-trigger:latest@sha256:c4503f4c55e9650d9a2039df810ab5aa6010bad247775df3637ec8387d03151e
+    image: ghcr.io/mahn-ke/backup-trigger:latest@sha256:2a05ae8c4814813e017a006f058436b348c57a264d9160304ceff1f837ada94f
     restart: unless-stopped
     environment:
       TF_VAR_GITHUB_PAT: ${TF_VAR_GITHUB_PAT}
